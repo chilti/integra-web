@@ -13,9 +13,7 @@ interface VectorFieldPlotProps {
 
 function VectorFieldPlot({
     equation,
-    initialXRange = [-10, 10],
-    initialYRange = [-10, 10],
-    initialZRange = [-10, 10]
+    initialXRange = [-10, 10]
 }: VectorFieldPlotProps) {
     // Controles internos para densidad y tamaño
     const [gridSize, setGridSize] = useState(30);

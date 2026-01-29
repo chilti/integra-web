@@ -13,7 +13,6 @@ export function euler(
     config: SolverConfig
 ): SimulationResult {
     const { dt, tEnd, maxSteps = 100000 } = config;
-    const n = y0.length;
 
     // Arrays para almacenar resultados
     const tValues: number[] = [t0];

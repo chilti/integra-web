@@ -77,6 +77,23 @@ Los archivos compilados estarán en la carpeta `dist/`
 npm run preview
 ```
 
+### Ejecución con Docker
+
+Puedes ejecutar la aplicación utilizando Docker sin necesidad de instalar Node.js:
+
+1. **Iniciar el contenedor**
+```bash
+docker-compose up -d --build
+```
+
+2. **Acceder a la aplicación**
+Abre tu navegador en: [http://localhost:5004](http://localhost:5004)
+
+3. **Detener el contenedor**
+```bash
+docker-compose down
+```
+
 ## 📖 Guía de Uso
 
 ### 1. Seleccionar un Sistema de Ejemplo
