@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  integra-web:
+    build: .
+    ports:
+      - "3000:80"
+    restart: always
+    container_name: integra-web

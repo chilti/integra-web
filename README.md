@@ -215,3 +215,16 @@ Proyecto académico - INTEGRA
 ## 👥 Créditos
 
 Migración a web del sistema INTEGRA C++ original.
+https://www.dynamics.unam.mx/DinamicaNoLineal4/php/tecnologia/integra.php
+
+
+Autores Originales (INTEGRA C++)
+
+Humberto Carrillo Calvet
+Antonio Carrillo Ledesma
+† Luis Alonso Nava Fernandez
+                     
+
+Esta versión web ha sido desarrollada por:
+José Luis Jiménez Andrade
+Claude (Anthropic AI), Antigravity (Google Inc).
