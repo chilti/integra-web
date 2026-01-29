@@ -218,13 +218,14 @@ Migración a web del sistema INTEGRA C++ original.
 https://www.dynamics.unam.mx/DinamicaNoLineal4/php/tecnologia/integra.php
 
 
-Autores Originales (INTEGRA C++)
+### Autores Originales (INTEGRA C++)
 
-Humberto Carrillo Calvet
-Antonio Carrillo Ledesma
-† Luis Alonso Nava Fernandez
+1. Humberto Carrillo Calvet
+2. Antonio Carrillo Ledesma
+3. † Luis Alonso Nava Fernandez
                      
 
-Esta versión web ha sido desarrollada por:
-José Luis Jiménez Andrade
-Claude (Anthropic AI), Antigravity (Google Inc).
+### Esta versión web ha sido desarrollada por:
+
+1. José Luis Jiménez Andrade
+3. Claude (Anthropic AI) y Antigravity (Google Inc).
