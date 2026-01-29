@@ -1,0 +1,90 @@
+.exportPanel {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border);
+}
+
+.sectionTitle {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-md);
+}
+
+.exportSection {
+    margin-bottom: var(--spacing-md);
+}
+
+.sectionLabel {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.buttonGroup {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.exportButton {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.exportButton:hover:not(:disabled) {
+    background-color: var(--bg-hover);
+    border-color: var(--accent-primary);
+}
+
+.exportButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.exportButton.fullWidth {
+    width: 100%;
+}
+
+.message {
+    padding: 0.5rem;
+    background-color: var(--accent-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dataInfo {
+    margin-top: var(--spacing-sm);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: center;
+}
