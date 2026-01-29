@@ -4,6 +4,6 @@ services:
   integra-web:
     build: .
     ports:
-      - "3000:80"
+      - "5004:80"
     restart: always
     container_name: integra-web
