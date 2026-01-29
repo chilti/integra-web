@@ -1,5 +1,17 @@
 .controlPanel {
     margin-bottom: var(--spacing-xl);
+
+    /* Sticky positioning */
+    position: sticky;
+    bottom: var(--spacing-md);
+    z-index: 10;
+    background-color: var(--bg-surface);
+    /* Ensure background is opaque */
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: 0 -4px 10px -2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
 }
 
 .sectionTitle {
