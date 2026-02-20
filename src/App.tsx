@@ -12,24 +12,62 @@ import HelpPanel from './components/HelpPanel';
 import type { SystemState, DifferentialEquation, InitialConditions, SolverConfig } from './types/equations';
 import { NumericalMethod } from './types/equations';
 import { integrate } from './solvers';
+import { EXAMPLE_SYSTEMS } from './data/exampleSystems';
+import { parseSystem } from './utils/equationParser';
 
 function App() {
 
-    const [systemState, setSystemState] = useState<SystemState>({
-        equation: null,
-        initialConditions: {
-            values: [1, 1, 1],
-            time: 0
-        },
-        solverConfig: {
-            method: NumericalMethod.RK4,
-            dt: 0.01,
-            tEnd: 50,
-            maxSteps: 100000
-        },
-        result: null,
-        isRunning: false,
-        error: null
+    const [systemState, setSystemState] = useState<SystemState>(() => {
+        const defaultSystem = EXAMPLE_SYSTEMS.find(s => s.id === 'carrillo-hoppensteadt');
+        if (defaultSystem) {
+            try {
+                const { variables, derivatives } = parseSystem(defaultSystem.equations);
+                const equation: DifferentialEquation = {
+                    id: defaultSystem.id,
+                    name: defaultSystem.name,
+                    description: defaultSystem.description,
+                    variables,
+                    parameters: defaultSystem.parameters,
+                    equations: defaultSystem.equations,
+                    derivatives
+                };
+
+                return {
+                    equation,
+                    initialConditions: {
+                        values: defaultSystem.suggestedInitialConditions || [0.1, 0.1],
+                        time: 0
+                    },
+                    solverConfig: {
+                        method: NumericalMethod.RK4,
+                        dt: 0.01,
+                        tEnd: 100,
+                        ...defaultSystem.suggestedConfig
+                    },
+                    result: null,
+                    isRunning: false,
+                    error: null
+                };
+            } catch (e) {
+                console.error("Error loading default system", e);
+            }
+        }
+        return {
+            equation: null,
+            initialConditions: {
+                values: [1, 1, 1],
+                time: 0
+            },
+            solverConfig: {
+                method: NumericalMethod.RK4,
+                dt: 0.01,
+                tEnd: 50,
+                maxSteps: 100000
+            },
+            result: null,
+            isRunning: false,
+            error: null
+        };
     });
 
     const [showHelp, setShowHelp] = useState(false);
@@ -132,7 +170,14 @@ function App() {
                         <h2>📐 Definición del Sistema</h2>
                     </div>
                     <div className={styles.panelContent}>
-                        <SystemLibrary onSelectSystem={handleEquationChange} />
+                        <SystemLibrary
+                            currentSystemId={systemState.equation?.id || null}
+                            onSelectSystem={handleEquationChange}
+                            equation={systemState.equation}
+                            isRunning={systemState.isRunning}
+                            onRun={handleRun}
+                            onReset={handleReset}
+                        />
 
                         <CustomEquationEditor
                             currentEquation={systemState.equation}
@@ -147,8 +192,6 @@ function App() {
                             isRunning={systemState.isRunning}
                             onInitialConditionsChange={handleInitialConditionsChange}
                             onSolverConfigChange={handleSolverConfigChange}
-                            onRun={handleRun}
-                            onReset={handleReset}
                         />
 
                         <ExportPanel
@@ -196,7 +239,7 @@ function App() {
 
                         <div className={styles.plotContainer}>
                             <div className={styles.plotHeader}>
-                                <h3 className={styles.plotTitle}>📈 Series Temporales</h3>
+                                <h3 className={styles.plotTitle}>📈 Cursos Temporales</h3>
                             </div>
                             <div className={styles.plotContent}>
                                 <TimeSeriesPlot

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import styles from './CustomEquationEditor.module.css';
+import Expander from './common/Expander';
 import type { DifferentialEquation } from '../types/equations';
 import { parseEquations, extractParameters, validateEquation } from '../utils/equationParser';
 
@@ -25,7 +26,6 @@ interface SavedSystem {
 const STORAGE_KEY = 'integra-saved-systems';
 
 export default function CustomEquationEditor({ currentEquation, onEquationChange }: CustomEquationEditorProps) {
-    const [isEditing, setIsEditing] = useState(false);
     const [systemName, setSystemName] = useState('Mi Sistema');
     const [variables, setVariables] = useState<EquationVariable[]>([
         { name: 'x', expression: '', error: null },
@@ -50,17 +50,21 @@ export default function CustomEquationEditor({ currentEquation, onEquationChange
 
     // Cuando se selecciona un sistema predefinido, cargar sus datos
     useEffect(() => {
-        if (currentEquation && !isEditing) {
+        if (currentEquation) {
             setSystemName(currentEquation.name);
-            setVariables(currentEquation.variables.map((name, i) => ({
-                name,
-                expression: currentEquation.equations[i] || '',
-                error: null
-            })));
+            setVariables(currentEquation.variables.map((name, i) => {
+                const eq = currentEquation.equations[i] || '';
+                const expression = eq.includes('=') ? eq.split('=')[1].trim() : eq;
+                return {
+                    name,
+                    expression,
+                    error: null
+                };
+            }));
             const paramEntries = Object.entries(currentEquation.parameters);
             setParameters(paramEntries.map(([name, value]) => ({ name, value })));
         }
-    }, [currentEquation, isEditing]);
+    }, [currentEquation]);
 
     const handleVariableNameChange = (index: number, name: string) => {
         const validName = name.replace(/[^a-zA-Z_]/g, '').slice(0, 10);
@@ -210,7 +214,6 @@ export default function CustomEquationEditor({ currentEquation, onEquationChange
         setSystemName(system.name);
         setVariables(system.variables.map(v => ({ ...v, error: null })));
         setParameters(Object.entries(system.parameters).map(([name, value]) => ({ name, value })));
-        setIsEditing(true);
         setSuccessMessage(`Cargado: ${system.name}`);
     };
 
@@ -222,161 +225,147 @@ export default function CustomEquationEditor({ currentEquation, onEquationChange
     };
 
     return (
-        <div className={styles.customEditor}>
-            <div className={styles.sectionTitle}>
-                <span>✏️ Editor de Ecuaciones</span>
-                <button
-                    className={`${styles.toggleButton} ${isEditing ? styles.toggleButtonActive : ''}`}
-                    onClick={() => setIsEditing(!isEditing)}
-                >
-                    {isEditing ? 'Modo Edición' : 'Editar'}
-                </button>
-            </div>
+        <Expander title="Editor de Ecuaciones" icon="✏️" defaultOpen={false} className={styles.customEditor}>
+            {/* Nombre del sistema */}
+            <input
+                type="text"
+                className={styles.nameInput}
+                value={systemName}
+                onChange={(e) => setSystemName(e.target.value)}
+                placeholder="Nombre del sistema"
+            />
 
-            {isEditing && (
-                <div className={styles.editorContainer}>
-                    {/* Nombre del sistema */}
-                    <input
-                        type="text"
-                        className={styles.nameInput}
-                        value={systemName}
-                        onChange={(e) => setSystemName(e.target.value)}
-                        placeholder="Nombre del sistema"
-                    />
-
-                    {/* Variables y Ecuaciones */}
-                    <div className={styles.subsectionTitle}>Ecuaciones Diferenciales</div>
-                    <div className={styles.equationsList}>
-                        {variables.map((variable, index) => (
-                            <div key={index}>
-                                <div className={styles.equationRow}>
-                                    <span className={styles.equationPrefix}>
-                                        d
-                                        <input
-                                            type="text"
-                                            value={variable.name}
-                                            onChange={(e) => handleVariableNameChange(index, e.target.value)}
-                                            style={{
-                                                width: '20px',
-                                                background: 'transparent',
-                                                border: 'none',
-                                                color: 'var(--accent-primary)',
-                                                fontFamily: 'var(--font-mono)',
-                                                fontSize: 'inherit',
-                                                padding: 0
-                                            }}
-                                        />
-                                        /dt =
-                                    </span>
-                                    <input
-                                        type="text"
-                                        className={`${styles.equationInput} ${variable.error ? styles.equationInputError : ''}`}
-                                        value={variable.expression}
-                                        onChange={(e) => handleExpressionChange(index, e.target.value)}
-                                        placeholder={`Expresión para ${variable.name}' (ej: sigma*(y - x))`}
-                                    />
-                                    {variables.length > 1 && (
-                                        <button
-                                            className={styles.removeButton}
-                                            onClick={() => handleRemoveVariable(index)}
-                                            title="Eliminar variable"
-                                        >
-                                            ×
-                                        </button>
-                                    )}
-                                </div>
-                                {variable.error && (
-                                    <div className={styles.errorMessage} style={{ marginTop: '4px', marginLeft: '68px' }}>
-                                        {variable.error}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                        <button className={styles.addButton} onClick={handleAddVariable}>
-                            + Agregar Variable
-                        </button>
-                    </div>
-
-                    {/* Parámetros */}
-                    <div className={styles.subsectionTitle}>Parámetros</div>
-                    <div className={styles.parametersGrid}>
-                        {parameters.map((param, index) => (
-                            <div key={index} className={styles.parameterRow}>
+            {/* Variables y Ecuaciones */}
+            <div className={styles.subsectionTitle}>Ecuaciones Diferenciales</div>
+            <div className={styles.equationsList}>
+                {variables.map((variable, index) => (
+                    <div key={index}>
+                        <div className={styles.equationRow}>
+                            <span className={styles.equationPrefix}>
+                                d
                                 <input
                                     type="text"
-                                    className={styles.parameterNameInput}
-                                    value={param.name}
-                                    onChange={(e) => handleParameterNameChange(index, e.target.value)}
+                                    value={variable.name}
+                                    onChange={(e) => handleVariableNameChange(index, e.target.value)}
+                                    style={{
+                                        width: '20px',
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: 'var(--accent-primary)',
+                                        fontFamily: 'var(--font-mono)',
+                                        fontSize: 'inherit',
+                                        padding: 0
+                                    }}
                                 />
-                                <span style={{ color: 'var(--text-muted)' }}>=</span>
-                                <input
-                                    type="number"
-                                    step="0.1"
-                                    className={styles.parameterValueInput}
-                                    value={param.value}
-                                    onChange={(e) => handleParameterValueChange(index, e.target.value)}
-                                />
+                                /dt =
+                            </span>
+                            <input
+                                type="text"
+                                className={`${styles.equationInput} ${variable.error ? styles.equationInputError : ''}`}
+                                value={variable.expression}
+                                onChange={(e) => handleExpressionChange(index, e.target.value)}
+                                placeholder={`Expresión para ${variable.name}' (ej: sigma*(y - x))`}
+                            />
+                            {variables.length > 1 && (
                                 <button
                                     className={styles.removeButton}
-                                    onClick={() => handleRemoveParameter(index)}
-                                    title="Eliminar parámetro"
-                                    style={{ width: '24px', height: '24px' }}
+                                    onClick={() => handleRemoveVariable(index)}
+                                    title="Eliminar variable"
                                 >
                                     ×
                                 </button>
-                            </div>
-                        ))}
-                    </div>
-                    <button className={styles.addButton} onClick={handleAddParameter}>
-                        + Agregar Parámetro
-                    </button>
-
-                    {/* Mensajes de error/éxito */}
-                    {globalError && <div className={styles.errorMessage}>{globalError}</div>}
-                    {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
-
-                    {/* Botones de acción */}
-                    <div className={styles.buttonRow}>
-                        <button
-                            className={styles.applyButton}
-                            onClick={validateAndApply}
-                        >
-                            ▶ Aplicar Sistema
-                        </button>
-                        <button
-                            className={styles.saveButton}
-                            onClick={handleSaveSystem}
-                        >
-                            💾 Guardar
-                        </button>
-                    </div>
-
-                    {/* Sistemas guardados */}
-                    {savedSystems.length > 0 && (
-                        <div className={styles.savedSystemsList}>
-                            <div className={styles.subsectionTitle}>Sistemas Guardados</div>
-                            {savedSystems.map(system => (
-                                <div
-                                    key={system.id}
-                                    className={styles.savedSystemItem}
-                                    onClick={() => handleLoadSavedSystem(system)}
-                                >
-                                    <span className={styles.savedSystemName}>{system.name}</span>
-                                    <div className={styles.savedSystemActions}>
-                                        <button
-                                            className={styles.deleteButton}
-                                            onClick={(e) => handleDeleteSavedSystem(e, system.id)}
-                                            title="Eliminar"
-                                        >
-                                            🗑
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                            )}
                         </div>
-                    )}
+                        {variable.error && (
+                            <div className={styles.errorMessage} style={{ marginTop: '4px', marginLeft: '68px' }}>
+                                {variable.error}
+                            </div>
+                        )}
+                    </div>
+                ))}
+                <button className={styles.addButton} onClick={handleAddVariable}>
+                    + Agregar Variable
+                </button>
+            </div>
+
+            {/* Parámetros */}
+            <div className={styles.subsectionTitle}>Parámetros</div>
+            <div className={styles.parametersGrid}>
+                {parameters.map((param, index) => (
+                    <div key={index} className={styles.parameterRow}>
+                        <input
+                            type="text"
+                            className={styles.parameterNameInput}
+                            value={param.name}
+                            onChange={(e) => handleParameterNameChange(index, e.target.value)}
+                        />
+                        <span style={{ color: 'var(--text-muted)' }}>=</span>
+                        <input
+                            type="number"
+                            step="0.1"
+                            className={styles.parameterValueInput}
+                            value={param.value}
+                            onChange={(e) => handleParameterValueChange(index, e.target.value)}
+                        />
+                        <button
+                            className={styles.removeButton}
+                            onClick={() => handleRemoveParameter(index)}
+                            title="Eliminar parámetro"
+                            style={{ width: '24px', height: '24px' }}
+                        >
+                            ×
+                        </button>
+                    </div>
+                ))}
+            </div>
+            <button className={styles.addButton} onClick={handleAddParameter}>
+                + Agregar Parámetro
+            </button>
+
+            {/* Mensajes de error/éxito */}
+            {globalError && <div className={styles.errorMessage}>{globalError}</div>}
+            {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
+
+            {/* Botones de acción */}
+            <div className={styles.buttonRow}>
+                <button
+                    className={styles.applyButton}
+                    onClick={validateAndApply}
+                >
+                    ▶ Aplicar Sistema
+                </button>
+                <button
+                    className={styles.saveButton}
+                    onClick={handleSaveSystem}
+                >
+                    💾 Guardar
+                </button>
+            </div>
+
+            {/* Sistemas guardados */}
+            {savedSystems.length > 0 && (
+                <div className={styles.savedSystemsList}>
+                    <div className={styles.subsectionTitle}>Sistemas Guardados</div>
+                    {savedSystems.map(system => (
+                        <div
+                            key={system.id}
+                            className={styles.savedSystemItem}
+                            onClick={() => handleLoadSavedSystem(system)}
+                        >
+                            <span className={styles.savedSystemName}>{system.name}</span>
+                            <div className={styles.savedSystemActions}>
+                                <button
+                                    className={styles.deleteButton}
+                                    onClick={(e) => handleDeleteSavedSystem(e, system.id)}
+                                    title="Eliminar"
+                                >
+                                    🗑
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
-        </div>
+        </Expander>
     );
 }

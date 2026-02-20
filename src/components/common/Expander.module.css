@@ -1,0 +1,80 @@
+.expander {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-surface);
+    overflow: hidden;
+    transition: all var(--transition-fast);
+}
+
+.expander:hover {
+    border-color: var(--border-light);
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--bg-tertiary);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    outline: none;
+}
+
+.header:hover {
+    background-color: var(--bg-hover);
+}
+
+.header:focus-visible {
+    background-color: var(--bg-hover);
+    box-shadow: inset 0 0 0 2px var(--accent-primary);
+}
+
+.titleContainer {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.icon {
+    font-size: 1.1em;
+}
+
+.title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.caret {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    transition: transform var(--transition-fast);
+}
+
+.caretOpen {
+    transform: rotate(180deg);
+    color: var(--accent-primary);
+}
+
+.content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-normal) ease-in-out;
+    background-color: var(--bg-surface);
+}
+
+.contentOpen {
+    max-height: 1000px;
+    /* Arbitrary large height */
+    overflow: visible;
+}
+
+.innerContent {
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--border);
+}

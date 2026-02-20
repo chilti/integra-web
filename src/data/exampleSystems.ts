@@ -461,22 +461,22 @@ export const EXAMPLE_SYSTEMS: ExampleSystem[] = [
         category: 'neuronal',
         variables: ['V', 'I'],
         parameters: {
-            epsilon: 0.00001,
+            epsilon: 0.001,
             S: 5.0,
             R: 1.0
         },
         equations: [
-            'dV/dt = epsilon*(S - V - R*I)',
-            'dI/dt = V - 0.0075*I + 2*I*exp(-I/2)'
+            'dV/dt = epsilon * (S - V - R*I)',
+            'dI/dt = V - 0.0075*I - 2*I*exp(-I/2)'
         ],
-        suggestedInitialConditions: [0.1, 0.1],
+        suggestedInitialConditions: [0.0, 0.0],
         suggestedConfig: {
             method: NumericalMethod.RK4,
             dt: 0.01,
-            tEnd: 100
+            tEnd: 10000
         },
         references: [
-            'Carrillo, H., & Hoppensteadt, F. C. (1997). Unfolding of a singular Hopf bifurcation.'
+            'Carrillo, H., Hoppensteadt, F. Unfolding an electronic integrate-and-fire circuit. Biol Cybern 102, 1–8 (2010). https://doi.org/10.1007/s00422-009-0358-x'
         ]
     }
 ];
